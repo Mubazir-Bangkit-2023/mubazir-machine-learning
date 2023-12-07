@@ -4,9 +4,6 @@ on:
   push:
     branches: [ "main" ]
 
-env:
-  gar_location: /capstone-project-mubazirapp/capstone/ml
-  service: mubazir
 
 jobs:
   build_and_deploy:
@@ -38,12 +35,12 @@ jobs:
           context: .
           push: true
           no-cache: false
-          tags: gcr.io/${{ secrets.PROJECT_ID }}/${{ env.gar_location }}:latest
+          tags: gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.GAR_LOCATION }}:latest
 
       - name: Deploy to Cloud Run
         run: |
-          gcloud run deploy ${{ env.service }} \
-            --image gcr.io/${{ secrets.PROJECT_ID }}/${{ env.gar_location }}:latest \
+          gcloud run deploy ${{ secrets.SERVICE }} \
+            --image gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.GAR_LOCATION }}:latest \
             --region ${{ secrets.REGION }} \
             --platform managed \
             --allow-unauthenticated
