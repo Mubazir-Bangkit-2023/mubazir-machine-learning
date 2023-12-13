@@ -1,0 +1,27 @@
+'Fresh Apples'
+
+'Fresh Banana'
+
+'Fresh Cucumber'
+
+'Fresh Okra'
+
+'Fresh Oranges'
+
+'Fresh Potato'
+
+'Fresh Tomato'
+
+'Rotten Apples'
+
+'Rotten Banana'
+
+'Rotten Cucumber'
+
+'Rotten Okra'
+
+'Rotten Oranges'
+
+'Rotten Potato'
+   
+'Rotten Tomato'
