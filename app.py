@@ -39,38 +39,23 @@ async def predict_image(img: UploadFile, response: Response):
         image = np.expand_dims(image, axis=0)
 
         # Predict the class of the image
-        arr = model.predict(image)
-
-        if arr[0][0]==1:
-            labels='Fresh Apples'
-        elif arr[0][1]==1:
-            labels='Fresh Banana'
-        elif arr[0][2]==1:
-            labels='Fresh Cucumber'
-        elif arr[0][3]==1:
-            labels='Fresh Okra'
-        elif arr[0][4]==1:
-            labels='Fresh Oranges'
-        elif arr[0][5]==1:
-            labels='Fresh Potato'
-        elif arr[0][6]==1:
-            labels='Fresh Tomato'
-        elif arr[0][7]==1:
-            labels='Rotten Apples'
-        elif arr[0][8]==1:
-            labels='Rotten Banana'
-        elif arr[0][9]==1:
-            labels='Rotten Cucumber'
-        elif arr[0][10]==1:
-            labels='Rotten Okra'
-        elif arr[0][11]==1:
-            labels='Rotten Oranges'
-        elif arr[0][12]==1:
-            labels='Rotten Potato'
-        elif arr[0][13]==1:
-            labels='Rotten Tomato'
+        arr = model.predict(images, batch_size=10)
         
-        return {"result":labels}
+        # Mengambil indeks kelas dengan nilai probabilitas tertinggi
+        predicted_class_index = np.argmax(arr)
+        
+        # Daftar label yang sesuai dengan kelas
+        class_labels = [
+            'Fresh Apples', 'Fresh Banana', 'Fresh Cucumber', 'Fresh Okra',
+            'Fresh Oranges', 'Fresh Potato', 'Fresh Tomato', 'Fresh Carrot',
+            'Rotten Apples', 'Rotten Banana', 'Rotten Cucumber',
+            'Rotten Okra', 'Rotten Oranges', 'Rotten Potato', 'Rotten Tomato', 'Rotten Carrot'
+        ]
+        
+        # Menentukan label
+        predicted_label = class_labels[predicted_class_index]
+        
+        return {"result":predicted_label}
     except Exception as e:
         traceback.print_exc()
         response.status_code = 500
