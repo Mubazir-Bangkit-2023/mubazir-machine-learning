@@ -39,7 +39,7 @@ async def predict_image(img: UploadFile, response: Response):
         image = np.expand_dims(image, axis=0)
 
         # Predict the class of the image
-        arr = model.predict(images, batch_size=10)
+        arr = model.predict(image, batch_size=10)
         
         # Mengambil indeks kelas dengan nilai probabilitas tertinggi
         predicted_class_index = np.argmax(arr)
