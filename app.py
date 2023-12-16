@@ -32,7 +32,7 @@ async def predict_image(img: UploadFile, response: Response):
         img = load_img(file_like_object, target_size=(150, 150))
 
         # Load the model
-        model = load_model('model.h5')
+        model = load_model('model1.h5')
 
         # Prepare the image for prediction
         image = img_to_array(img)
@@ -46,13 +46,29 @@ async def predict_image(img: UploadFile, response: Response):
         elif arr[0][1]==1:
             labels='Fresh Banana'
         elif arr[0][2]==1:
-            labels='Fresh Oranges'
+            labels='Fresh Cucumber'
         elif arr[0][3]==1:
-            labels='Rotten Apples'
+            labels='Fresh Okra'
         elif arr[0][4]==1:
-            labels='Rotten Banana'
+            labels='Fresh Oranges'
         elif arr[0][5]==1:
+            labels='Fresh Potato'
+        elif arr[0][6]==1:
+            labels='Fresh Tomato'
+        elif arr[0][7]==1:
+            labels='Rotten Apples'
+        elif arr[0][8]==1:
+            labels='Rotten Banana'
+        elif arr[0][9]==1:
+            labels='Rotten Cucumber'
+        elif arr[0][10]==1:
+            labels='Rotten Okra'
+        elif arr[0][11]==1:
             labels='Rotten Oranges'
+        elif arr[0][12]==1:
+            labels='Rotten Potato'
+        elif arr[0][13]==1:
+            labels='Rotten Tomato'
         
         return {"result":labels}
     except Exception as e:
