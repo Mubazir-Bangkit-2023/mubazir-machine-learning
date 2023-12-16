@@ -35,12 +35,12 @@ jobs:
           context: .
           push: true
           no-cache: false
-          tags: gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.GAR_LOCATION }}:latest
+          tags: ${{ secrets.GAR_LOCATION }}:latest
 
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy ${{ secrets.SERVICE }} \
-            --image gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.GAR_LOCATION }}:latest \
+            --image ${{ secrets.GAR_LOCATION }}:latest \
             --region ${{ secrets.REGION }} \
             --platform managed \
             --allow-unauthenticated
