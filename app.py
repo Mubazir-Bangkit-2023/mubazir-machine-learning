@@ -39,8 +39,8 @@ async def predict_image(img: UploadFile, response: Response):
         image = np.expand_dims(image, axis=0)
 
         # Predict the class of the image
-        arr = model.predict(image)
-         if arr[0][0]==1:
+         arr = model.predict(image)
+          if arr[0][0]==1:
             labels='Fresh Apples'
           elif arr[0][1]==1:
             labels='Fresh Banana'
@@ -52,7 +52,7 @@ async def predict_image(img: UploadFile, response: Response):
             labels='Rotten Banana'
           elif arr[0][5]==1:
             labels='Rotten Oranges'
-        
+              
         return {"result":labels}
     except Exception as e:
         traceback.print_exc()
