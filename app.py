@@ -32,7 +32,7 @@ async def predict_image(img: UploadFile, response: Response):
         img = load_img(file_like_object, target_size=(150, 150))
 
         # Load the model
-        model = load_model('model1.h5')
+        model = load_model('model.h5')
 
         # Prepare the image for prediction
         image = img_to_array(img)
@@ -40,22 +40,20 @@ async def predict_image(img: UploadFile, response: Response):
 
         # Predict the class of the image
         arr = model.predict(image)
+         if arr[0][0]==1:
+            labels='Fresh Apples'
+          elif arr[0][1]==1:
+            labels='Fresh Banana'
+          elif arr[0][2]==1:
+            labels='Fresh Oranges'
+          elif arr[0][3]==1:
+            labels='Rotten Apples'
+          elif arr[0][4]==1:
+            labels='Rotten Banana'
+          elif arr[0][5]==1:
+            labels='Rotten Oranges'
         
-        # Mengambil indeks kelas dengan nilai probabilitas tertinggi
-        predicted_class_index = np.argmax(arr)
-        
-        # Daftar label yang sesuai dengan kelas
-        class_labels = [
-            'Fresh Apples', 'Fresh Banana', 'Fresh Cucumber', 'Fresh Okra',
-            'Fresh Oranges', 'Fresh Potato', 'Fresh Tomato', 'Fresh Carrot',
-            'Rotten Apples', 'Rotten Banana', 'Rotten Cucumber',
-            'Rotten Okra', 'Rotten Oranges', 'Rotten Potato', 'Rotten Tomato', 'Rotten Carrot'
-        ]
-        
-        # Menentukan label
-        predicted_label = class_labels[predicted_class_index]
-        
-        return {"result":predicted_label}
+        return {"result":labels}
     except Exception as e:
         traceback.print_exc()
         response.status_code = 500
