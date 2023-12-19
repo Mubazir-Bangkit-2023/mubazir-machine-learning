@@ -21,7 +21,7 @@ async def predict_image(img: UploadFile, response: Response):
         if img.content_type not in ["image/jpeg", "image/png"]:
             response.status_code = 400
             return "File is Not an Image"
-        
+
         # Read file content
         file_content = await img.read()
 
@@ -39,20 +39,21 @@ async def predict_image(img: UploadFile, response: Response):
         image = np.expand_dims(image, axis=0)
 
         # Predict the class of the image
-         arr = model.predict(image)
-          if arr[0][0]==1:
+        arr = model.predict(image)
+
+        if arr[0][0]==1:
             labels='Fresh Apples'
-          elif arr[0][1]==1:
+        elif arr[0][1]==1:
             labels='Fresh Banana'
-          elif arr[0][2]==1:
+        elif arr[0][2]==1:
             labels='Fresh Oranges'
-          elif arr[0][3]==1:
+        elif arr[0][3]==1:
             labels='Rotten Apples'
-          elif arr[0][4]==1:
+        elif arr[0][4]==1:
             labels='Rotten Banana'
-          elif arr[0][5]==1:
+        elif arr[0][5]==1:
             labels='Rotten Oranges'
-              
+
         return {"result":labels}
     except Exception as e:
         traceback.print_exc()
