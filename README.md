@@ -34,6 +34,9 @@ The dataset employed in this project comprises images showcasing a variety of fr
 
 ## Results
 The model achieved a test accuracy of 97% on the test dataset. The training and validation loss/accuracy plots can be found here.
+![acc](https://github.com/Mubazir-Bangkit-2023/mubazir-machine-learning/assets/95016158/6f2c7efe-5c95-42ad-9b88-568b92606d11)
+
+![loss](https://github.com/Mubazir-Bangkit-2023/mubazir-machine-learning/assets/95016158/64495ff1-56f3-4b27-a2d6-4597ce07d845)
 
 
 ## Future Work
