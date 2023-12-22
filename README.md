@@ -13,6 +13,7 @@ The dataset employed in this project comprises images showcasing a variety of fr
 ## Feature
 - Data Augmentation 
 - CNN (Convolutional Neural Networks)
+- Transfer Learning (Mobinenetv2)
 
 ## Requirements 
 - Tensorflow 
@@ -32,7 +33,8 @@ The dataset employed in this project comprises images showcasing a variety of fr
 - Deploy the model using Fast Api
 
 ## Results
-The model achieved a test accuracy of XX% on the test dataset. The training and validation loss/accuracy plots can be found here.
+The model achieved a test accuracy of 97% on the test dataset. The training and validation loss/accuracy plots can be found here.
+
 
 ## Future Work
 - Expand the data set to include a wider variety of fruits and vegetables
