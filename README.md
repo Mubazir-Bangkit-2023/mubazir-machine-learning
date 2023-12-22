@@ -21,14 +21,14 @@ The dataset employed in this project comprises images showcasing a variety of fr
 - Scikit-learn
 
 ## Documentation
--Conduct research related to machine learning models
--Collect fresh and rotten fruits and vegetables datasets 
--Split the dataset into 70% for the training set and 30% for the validation set
--Create a machine learning model with CNN (Convolutional Neural Network) using MobileNetV2 architecture
--Train the model 
--Evaluate the machine learning model
--Testing the model by uploading new test data that the model has never seen before
--Deploy the model using Fast Api
+- Conduct research related to machine learning models
+- Collect fresh and rotten fruits and vegetables datasets 
+- Split the dataset into 70% for the training set and 30% for the validation set
+- Create a machine learning model with CNN (Convolutional Neural Network) using MobileNetV2 architecture
+- Train the model 
+- Evaluate the machine learning model
+- Testing the model by uploading new test data that the model has never seen before
+- Deploy the model using Fast Api
 
 ## Results
 The model achieved a test accuracy of XX% on the test dataset. The training and validation loss/accuracy plots can be found here.
