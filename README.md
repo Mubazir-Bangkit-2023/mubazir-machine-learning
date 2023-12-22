@@ -8,6 +8,7 @@ The objective of this project is to construct a model capable of precisely categ
 
 ## Dataset
 The dataset employed in this project comprises images showcasing a variety of fruits and vegetables systematically arranged into distinct categories. Every image is annotated with the specific category of the fruit or vegetable and its corresponding freshness classification.
+- https://drive.google.com/drive/folders/1ebQa96MrdZYi1mj4PJUZbrDSyXWQ0xd-?usp=sharing
 
 ## Feature
 - Data Augmentation 
