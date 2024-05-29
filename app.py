@@ -39,20 +39,14 @@ async def predict_image(img: UploadFile, response: Response):
         image = np.expand_dims(image, axis=0)
 
         # Predict the class of the image
-        arr = model.predict(image)
-
-        arr = model.predict(image, batch_size=10)
-        
-        # Mengambil indeks kelas dengan nilai probabilitas tertinggi
-        predicted_class_index = np.argmax(arr)
-        
-        # Daftar label yang sesuai dengan kelas
-        class_labels = [
-            'Fresh Apples', 'Fresh Banana', 'Fresh Cucumber',
-            'Fresh Oranges',
-            'Rotten Apples', 'Rotten Banana', 'Rotten Cucumber',
-            'Rotten Oranges'
-        ]
+        prediction = model.predict([img_array, np.zeros((1, 150, 150, 3))])[0]
+        confidence = np.max(prediction)
+        print(f"Predictions: {prediction}, Confidence: {confidence}")  # Debugging output
+        predicted_class_index = np.argmax(prediction)
+        if predicted_class_index >= len(class_labels) or confidence < confidence_threshold:
+            return "Cannot be predicted", confidence
+        predicted_label = class_labels[predicted_class_index]
+        return predicted_label, confidence
 
 # Menentukan label
         predicted_label = class_labels[predicted_class_index]
