@@ -49,7 +49,6 @@ async def predict_image(img: UploadFile, response: Response):
         return predicted_label, confidence
 
 # Menentukan label
-        predicted_label = class_labels[predicted_class_index]
 
         return {"result":predicted_label}
     except Exception as e:
