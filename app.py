@@ -39,7 +39,7 @@ async def predict_image(img: UploadFile, response: Response):
         image = np.expand_dims(image, axis=0)
 
         # Predict the class of the image
-        prediction = model.predict([img_array, np.zeros((1, 150, 150, 3))])[0]
+        prediction = model.predict([image, np.zeros((1, 150, 150, 3))])[0]
         confidence = np.max(prediction)
         print(f"Predictions: {prediction}, Confidence: {confidence}")  # Debugging output
         predicted_class_index = np.argmax(prediction)
