@@ -50,7 +50,7 @@ async def predict_image(img: UploadFile, response: Response):
 
 # Menentukan label
 
-        return {"result":predicted_label}
+        return {"result":print(f'Gambar {fn} adalah {jenis_buah}, dan buah tersebut {kesegaran_buah}')}
     except Exception as e:
         traceback.print_exc()
         response.status_code = 500
