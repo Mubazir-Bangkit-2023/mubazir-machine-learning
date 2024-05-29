@@ -32,7 +32,7 @@ async def predict_image(img: UploadFile, response: Response):
         img = load_img(file_like_object, target_size=(150, 150))
 
         # Load the model
-        model = load_model('model.h5')
+        model = load_model('combined_model.h5')
 
         # Prepare the image for prediction
         image = img_to_array(img)
