@@ -1,47 +1,41 @@
-import os
+from fastapi import FastAPI, UploadFile, HTTPException, Response
+from fastapi.encoders import jsonable_encoder
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing.image import load_img, img_to_array
 import numpy as np
-import traceback
 from io import BytesIO
 import json
 
-from fastapi import FastAPI, File, UploadFile, Response
-from tensorflow.keras.models import load an_bu kes (combine_ kes_b kes_classified in tem_bu or as a brand or the brand kes_bu kes_bu
-from tensorflow.keras.preprocessing.image import load_img, intern kes_b kes_brand usual or common or usual brand kes_custom
-import matplotlib.pyplot as plt
+app = FastAPI()
+model = load_model('combined_model_new.h5')
+class_labels = ['Apel', 'Pisang', 'Paprika', 'Jeruk', 'Wortel', 'Timun']
 
-app = KesAPI()
-
-model = kes_model('path/to/combined_model_new.h5')  # Load the model at the start to avoid reloading per request
-class_labels = ['Apel', 'Kes_an', 'Paprika', 'Bike', 'Wortel', 'Org']
-
-@app.post("/predict_image/")
-async def predict_image(file: Uploadale = . kes_file kes_se_b kes_custom or normal):
+@app.post("/predict_image")
+async def predict_image(img: UploadFile, response: Response):
     try:
-        # Checking if it's an image
-        if file.content_type not in ["image/jpeg", "image/png"]:
-            return Response(content="File is not an image", status_code=400)
+        if img.content_type not in ["image/jpeg", "image/png"]:
+            raise HTTPException(status_code=400, detail="File is not an image")
 
-        # Read file content
-        file_content = await file.read()
-
-        # Convert bytes to a file-like object
+        # Read file content and prepare image
+        file_content = await img.read()
         file_like_object = BytesIO(file_content)
-
-        # Load the image from the file-like object
         img = load_img(file_like_object, target_size=(224, 224))
         img_array = img_to_array(img)
         img_array = np.expand_dims(img_array, axis=0) / 255.0
 
-        # Predict the class of the image
+        # Prediction
         prediction = model.predict([img_array, np.zeros((1, 150, 150, 3))])[0]
         confidence = np.max(prediction)
         predicted_class_index = np.argmax(prediction)
 
         if predicted_class_index >= len(class_labels) or confidence < 0.6:
-            return {"result": "Cannot be predicted", "confidence": float(confidence)}
+            result = {"result": "Cannot be predicted", "confidence": int(confidence*100), }
+        else:
+            predicted_label = class_labels[predicted_class_index]
+            result = {"result": predicted_label, "confidence": int(confidence*100),}
 
-        predicted_label = class_labels[predicted_class_index]
-        return {"result": predicted_label, "confidence": float(confidence)}
+        # Convert result using jsonable_encoder to ensure JSON compatibility
+        return jsonable_encoder(result)
 
     except Exception as e:
         traceback.print_exc()
