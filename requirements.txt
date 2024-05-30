@@ -9,5 +9,5 @@ tensorflow
 keras
 seaborn
 h5py
-sckit-learn
+scikit-learn
 tqdm
