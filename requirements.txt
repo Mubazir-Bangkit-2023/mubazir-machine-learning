@@ -7,4 +7,7 @@ Pillow
 opencv-python
 tensorflow
 keras
-
+seaborn
+h5py
+sckit-learn
+tqdm
