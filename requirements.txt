@@ -7,4 +7,4 @@ Pillow
 opencv-python
 tensorflow
 keras
-ipykernel
+
