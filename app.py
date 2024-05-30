@@ -84,7 +84,7 @@ def predict_kesegaran(model, file_name, target_size=(150, 150)):
 
 # Menentukan label
 
-        return {"result":kesegaran_buah}
+        return {"result":predicted_label}
     except Exception as e:
         traceback.print_exc()
         response.status_code = 500
