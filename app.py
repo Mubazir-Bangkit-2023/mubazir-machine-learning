@@ -1,59 +1,87 @@
-from fastapi import FastAPI, UploadFile, HTTPException
+from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
-import numpy as np
-import json
+from fastapi.responses import FileResponse
 from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing.image import load_img, img_to_array
+from tensorflow.keras.preprocessing.image import img_to_array, load_img
+from tensorflow.keras.metrics import Metric, Precision, Recall
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.utils import custom_object_scope
+from tensorflow import keras
+import tensorflow as tf
 from io import BytesIO
+import numpy as np
+import uvicorn
+
+# Define the custom F1Score class
+class F1Score(Metric):
+    def __init__(self, name='f1_score', **kwargs):
+        super(F1Score, self).__init__(name=name, **kwargs)
+        self.precision = Precision()
+        self.recall = Recall()
+
+    def update_state(self, y_true, y_pred, sample_weight=None):
+        y_pred = tf.round(y_pred)
+        self.precision.update_state(y_true, y_pred, sample_weight)
+        self.recall.update_state(y_true, y_pred, sample_weight)
+
+    def result(self):
+        p = self.precision.result()
+        r = self.recall.result()
+        return 2 * ((p * r) / (p + r + keras.backend.epsilon()))
+
+    def reset_states(self):
+        self.precision.reset_states()
+        self.recall.reset_states()
 
 app = FastAPI()
 
-# Load the model
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
-combined_model = load_model('combined_model_new.h5')
-class_labels = ['Apel', 'Pisang', 'Paprika', 'Jeruk', 'Wortel', 'Timun']
+@app.get("/")
+def read_root():
+    return FileResponse('static/index.html')
 
-def predict_jenis_buah(model, img_array, class_labels, confidence_threshold=0.6):
-    prediction = model.predict([img_array, np.zeros((1, 150, 150, 3))])[0]
-    confidence = np.max(prediction)
-    predicted_class_index = np.argmax(prediction)
-    if predicted_class_index >= len(class_labels) or confidence < confidence_threshold:
-        return "0", confidence
-    predicted_label = class_labels[predicted_class_index]
-    return predicted_label, confidence
+# Path to the pre-trained model
+MODEL_PATH = 'BestModel.h5'
 
-def predict_kesegaran(model, img_array):
-    prediction = model.predict([np.zeros((1, 224, 224, 3)), img_array])[1]
-    return 'Segar' if prediction[0] > 0.01 else 'Tidak Segar'
+# Load and compile the model with custom_object_scope including the custom F1Score metric
+with custom_object_scope({'F1Score': F1Score, 'Precision': Precision, 'Recall': Recall}):
+    model = load_model(MODEL_PATH)
+    model.compile(optimizer=Adam(),
+                  loss='categorical_crossentropy',
+                  metrics=['accuracy', Precision(), Recall(), F1Score()])
+
+class_labels = [
+    'Fresh Apples', 'Fresh Banana', 'Fresh Cucumber',
+    'Fresh Oranges', 'Rotten Apples', 'Rotten Banana',
+    'Rotten Cucumber', 'Rotten Oranges',
+]
 
 @app.post("/predict_image")
-async def predict_image(file: UploadFile):
+async def predict_image(file: UploadFile = File(...)):
     if file.content_type not in ["image/jpeg", "image/png"]:
         raise HTTPException(status_code=400, detail="Unsupported file format")
 
-    # Read image file and prepare it
+    # Load the image from the uploaded file
     contents = await file.read()
-    img = load_img(BytesIO(contents), target_size=(224, 224))
+    img = load_img(BytesIO(contents), target_size=(299, 299))  # Adjust target size to your model's expected input
     img_array = img_to_array(img)
-    img_array = np.expand_dims(img_array, axis=0) / 255.0
-    
-    # Predict jenis buah
-    jenis_buah, confidence = predict_jenis_buah(combined_model, img_array, class_labels)
-    if jenis_buah == "0":
-        kesegaran_buah = "0"
-    else:
-        img = load_img(BytesIO(contents), target_size=(150, 150))
-        img_array_freshness = img_to_array(img)
-        img_array_freshness = np.expand_dims(img_array_freshness, axis=0) / 255.0
-        kesegaran_buah = predict_kesegaran(combined_model, img_array_freshness)
+    img_array = np.expand_dims(img_array, axis=0) / 255.0  # Preprocess image as per the model's requirements
 
-    # Construct result
-    result = {
-        'Jenis Buah': jenis_buah,
-        'Confidence': int(confidence*100),
-        'Kesegaran Buah': kesegaran_buah
+    # Predict the class using the loaded model
+    predictions = model.predict(img_array)
+    predicted_class_index = np.argmax(predictions)
+    confidence = np.max(predictions) * 100  # Confidence score in percentage
+
+    # Create response data
+    response_data = {
+        "Jenis_Buah": file.filename,
+        "Confidence": f"{confidence:.2f}%",
+        "Kesegaran_Buah": class_labels[predicted_class_index]
     }
 
-    return JSONResponse(content=result)
+    return JSONResponse(content=response_data)
 
-
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
