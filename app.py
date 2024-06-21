@@ -75,13 +75,18 @@ async def predict_image(file: UploadFile = File(...)):
     confidence = np.max(predictions) * 100  # Confidence score in percentage
 
     # Create response data
+    kesegaran, jenis_buah = class_labels[predicted_class_index].split(' ')
+
     response_data = {
-        "Jenis_Buah": file.filename,
-        "Confidence": f"{confidence:.2f}%",
-        "Kesegaran_Buah": class_labels[predicted_class_index]
+        "Kesegaran": kesegaran,
+        "Jenis_Buah": jenis_buah,
+        "Confidence": f"{confidence:.2f}%" if confidence else None
     }
 
+    
     return JSONResponse(content=response_data)
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
